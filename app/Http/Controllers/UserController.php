@@ -42,7 +42,6 @@ class UserController extends Controller
     public function authenticate(Request $request){
         try
         {
-            file_put_contents('./../../../log.txt', $request);
             if(isset($request->name, $request->password) === false){
                 return new JsonResponse([
                     'loggedIn' => 0,
@@ -50,41 +49,21 @@ class UserController extends Controller
                 ], 401);
             }
 
-            /*$coincidencia = User::query()->where('usuario', $request->name)->first();
-
-            file_put_contents('./../../../log.txt', $request->name, FILE_APPEND);
-            file_put_contents('./../../../log.txt', Hash::make($request->password), FILE_APPEND);
-            file_put_contents('./../../../log.txt', $coincidencia, FILE_APPEND);*/
             $credenciales = [
                 'username' => $request->name,
                 'password' => $request->password
             ];
 
-            file_put_contents('./../../../log.txt', $credenciales, FILE_APPEND);
-
             if(Auth::attempt($credenciales)) {
-                file_put_contents('./../../../log.txt', '(1)', FILE_APPEND);
                 $request->session()->regenerate();
-                file_put_contents('./../../../log.txt', '(2)', FILE_APPEND);
                 $sessionid = $request->session()->getId();
-                file_put_contents('./../../../log.txt', '(3)', FILE_APPEND);
 
                 $respuesta = new JsonResponse([
                     'loggedIn' => 1,
                     'message' => null
                 ], 200);
 
-                $hambre = Cookie::make(
-                    'SESSION_ID',
-                    $sessionid,
-                    0,
-                    '/pub-admin',
-                    'localhost:4321',
-                    true,
-                    true
-                );
-
-                $respuesta->withCookie($hambre);
+                // Las cookies parecen que son enviadas de manera automática
                 return $respuesta;
             }
 
@@ -97,6 +76,46 @@ class UserController extends Controller
             return new JsonResponse([
                 'loggedIn' => 0,
                 'message' => "Error interno del servidor ({$ex->getMessage()})"
+            ], 500);
+        }
+    }
+
+    public function checkSession(Request $request){
+        try{
+            if(Auth::check()){
+                return new JsonResponse([
+                    'sessionActive' => 1,
+                    'message' => null
+                ], 200);
+            }
+
+            return new JsonResponse([
+                'sessionActive' => 0,
+                'message' => null
+            ], 401);
+        }
+        catch(\Exception $e){
+            return new JsonResponse([
+                'loggedIn' => 0,
+                'message' => "Error interno del servidor ({$e->getMessage()})"
+            ], 500);
+        }
+    }
+
+    public function logout(Request $request){
+        try{
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return new JsonResponse([
+                'message' => null
+            ], 200);
+        }
+        catch(\Exception $e){
+            return new JsonResponse([
+                'loggedIn' => 0,
+                'message' => "Error interno del servidor ({$e->getMessage()})"
             ], 500);
         }
     }

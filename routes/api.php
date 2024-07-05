@@ -29,4 +29,6 @@ Route::delete('publicacionesdelete/{id}', [PublicacionesController::class, 'dest
 
 // Para la autenticación en la página de publicaciones
 Route::middleware(StartSession::class)->post('auth-posts', [UserController::class, 'authenticate']);
+Route::middleware(StartSession::class)->get('session-validation', [UserController::class, 'checkSession']);
+Route::middleware(StartSession::class)->get('logout', [UserController::class, 'logout']);
 Route::post('new-user', [UserController::class, 'create']);
