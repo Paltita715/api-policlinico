@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicacionesController;
 use App\Http\Controllers\CarruselImagenesController;
+use App\Http\Controllers\UserController;
+use Illuminate\Session\Middleware\StartSession;
 
 /*Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,3 +26,7 @@ Route::get('publicaciones/{id}', [PublicacionesController::class, 'show']);
 Route::post('publicaciones', [PublicacionesController::class, 'store']);
 Route::put('publicacionesupdate/{id}', [PublicacionesController::class, 'update']);
 Route::delete('publicacionesdelete/{id}', [PublicacionesController::class, 'destroy']);
+
+// Para la autenticación en la página de publicaciones
+Route::middleware(StartSession::class)->post('auth-posts', [UserController::class, 'authenticate']);
+Route::post('new-user', [UserController::class, 'create']);
