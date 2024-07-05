@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PublicacionesController;
 use App\Http\Controllers\CarruselImagenesController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Session\Middleware\StartSession;
 
 /*Route::get('/user', function (Request $request) {
@@ -28,7 +29,10 @@ Route::put('publicacionesupdate/{id}', [PublicacionesController::class, 'update'
 Route::delete('publicacionesdelete/{id}', [PublicacionesController::class, 'destroy']);
 
 // Para la autenticación en la página de publicaciones
-Route::middleware(StartSession::class)->post('auth-posts', [UserController::class, 'authenticate']);
-Route::middleware(StartSession::class)->get('session-validation', [UserController::class, 'checkSession']);
-Route::middleware(StartSession::class)->get('logout', [UserController::class, 'logout']);
+Route::middleware(StartSession::class)->post('auth-posts', [UserController::class, 'authenticate'])
+    ->middleware(HandleCors::class);
+Route::middleware(StartSession::class)->get('session-validation', [UserController::class, 'checkSession'])
+    ->middleware(HandleCors::class);
+Route::middleware(StartSession::class)->get('logout', [UserController::class, 'logout'])
+    ->middleware(HandleCors::class);
 Route::post('new-user', [UserController::class, 'create']);
