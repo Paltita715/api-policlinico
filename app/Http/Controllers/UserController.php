@@ -56,7 +56,6 @@ class UserController extends Controller
 
             if(Auth::attempt($credenciales)) {
                 $request->session()->regenerate();
-                $sessionid = $request->session()->getId();
 
                 $respuesta = new JsonResponse([
                     'loggedIn' => 1,

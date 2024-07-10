@@ -20,6 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['https://www.policlinicolatrinidad.com'],
+    //'allowed_origins' => ['*'],
+    //'allowed_origins' => ['http://localhost:4321'],
 
     'allowed_origins_patterns' => [],
 
