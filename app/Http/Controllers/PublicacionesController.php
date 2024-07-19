@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 class PublicacionesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Retorna todas las publicaciones
+     * 
+     * @return JsonResponse
      */
     public function index()
     {
@@ -23,7 +25,7 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource. (no usado)
      */
     public function create()
     {
@@ -31,7 +33,14 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena una nueva instancia de una imágen en la base de datos.
+     * La imagen actual es guardada en el almacenamiento del servidor.
+     * 
+     * @param PublicacionesStoreRequest $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
      */
     public function store(PublicacionesStoreRequest $request)
     {
@@ -54,7 +63,12 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Retorna una instancia de publicación del servidor según un ID especificado
+     * 
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de carrusel actual 
      */
     public function show($id)
     {
@@ -71,7 +85,7 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * No usado
      */
     public function edit(string $id)
     {
@@ -79,19 +93,32 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Modificar una entrada de las publicaciones según el ID especificado
+     * 
+     * @param CarruselImagenesStoreRequest $request
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de publicaciones actual 
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
      */
     public function update(PublicacionesStoreRequest $request, $id)
     {
         try{
+            // Consulta según ID
             $publicacion = Publicaciones::find($id);
             if(!$publicacion) {
                 return response()->json([
                     'message' => 'Publicacion no encontrada'
                 ],404);
             }
+
+            // Actualización de atributos
             $publicacion->titulo = $request->titulo;
             $publicacion->contenido = $request->contenido;
+
+            // Reemplazo de la imagen actual en el almacenamiento por una nueva
             if($request->imagen){
                 $storage = Storage::disk('public');
                 if($storage->exists($publicacion->imagen)){
@@ -101,6 +128,8 @@ class PublicacionesController extends Controller
                 $publicacion->imagen = $imagenName;
                 $storage->put($imagenName, file_get_contents($request->imagen));
             }
+
+            // Guardado de cambios
             $publicacion->save();
             return response()->json([
                 'message' => 'Publicacion actualizada correctamente'
@@ -113,7 +142,13 @@ class PublicacionesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la instancia especificada por el ID de la base de datos y su imagen
+     * vinculada del almacenamiento del servidor
+     * 
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de publicaciones actual 
      */
     public function destroy(string $id)
     {

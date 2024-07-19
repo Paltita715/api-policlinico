@@ -11,6 +11,7 @@ class FarmacosFactory extends Factory
 {
     /**
      * Define the model's default state.
+     * (Este es usado con fines de testeo y desarrollo)
      *
      * @return array<string, mixed>
      */

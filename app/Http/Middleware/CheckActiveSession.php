@@ -13,7 +13,12 @@ class CheckActiveSession
 {
 
     /**
-     * Handle an incoming request.
+     * Este middleware revisa si el que envió una solicitud a los endpoints del servidor tiene una
+     * sesión activa, si existe, ejecuta la función del endpoint o el siguiente middleware. Si no, 
+     * retorna 401.
+     * 
+     * Con esta middleware se puede verificar la sesión después de la comprobación inicial en la
+     * página de login
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */

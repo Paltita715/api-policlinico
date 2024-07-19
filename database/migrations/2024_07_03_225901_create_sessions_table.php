@@ -8,6 +8,9 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * Tabla: sessions (maneja las sesiones, generada automáticamente por Laravel)
+     * (MODIFICAR CON CUIDADO)
      */
     public function up(): void
     {

@@ -8,6 +8,14 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * Tabla: publicaciones
+     * atributos:
+     *     id: int
+     *     titulo: text
+     *     imagen: text
+     *     contenido: text
+     *     timestamps: date, generados por Eloquent
      */
     public function up(): void
     {
