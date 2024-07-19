@@ -8,6 +8,13 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * Tabla: carrusel_imagenes
+     * atributos:
+     *     id: int
+     *     imagen: text
+     *     alt: text
+     *     timestamps: date, generados por Eloquent
      */
     public function up(): void
     {

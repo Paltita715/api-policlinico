@@ -8,6 +8,12 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * 
+     * tabla: users (USADO PARA REGISTRAR A LOS USUARIOS DEL ADMINISTRADOR DE CONTENIDOS, MODIFICAR CON CUIDADO)
+     * atributos:
+     *     id: int
+     *     username: text, unique
+     *     password: text, pasado antes por bcrypt
      */
     public function up(): void
     {

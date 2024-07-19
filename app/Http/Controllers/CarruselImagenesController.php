@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 class CarruselImagenesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra todos los elementos del carrusel de imágenes
+     * 
+     * @return JsonResponse con un estado de 200: ok
      */
     public function index()
     {
@@ -31,7 +33,14 @@ class CarruselImagenesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Guarda información de una imagen del carrusel en una base de datos. La imagen es
+     * guardada en el almacenamiento del servidor
+     * 
+     * @param CarruselImagenesStoreRequest $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
      */
     public function store(CarruselImagenesStoreRequest $request)
     {
@@ -53,7 +62,12 @@ class CarruselImagenesController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Retorna un elemento carrusel del servidor según un ID especificado
+     * 
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de carrusel actual 
      */
     public function show($id)
     {
@@ -70,7 +84,7 @@ class CarruselImagenesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified resource. (no usado)
      */
     public function edit(string $id)
     {
@@ -78,11 +92,20 @@ class CarruselImagenesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Modificar una entrada del carrusel de imágenes según el Id especificado
+     * 
+     * @param CarruselImagenesStoreRequest $request
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de carrusel actual 
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
      */
     public function update(CarruselImagenesStoreRequest $request, $id)
     {
         try{
+            // Consulta si existe el recurso y actualiza el texto alternativo
             $carruselImagen = CarruselImagenes::find($id);
             if(!$carruselImagen) {
                 return response()->json([
@@ -90,6 +113,10 @@ class CarruselImagenesController extends Controller
                 ],404);
             }
             $carruselImagen->alt = $request->alt;
+
+            // Consulta si $request contiene una imagen y la usa para reemplazar
+            // la anterior, o añadir si la instancia consultada no contiene
+            // una imágen (por algún motivo)
             if($request->imagen){
                 $storage = Storage::disk('public');
                 if($storage->exists($carruselImagen->imagen)){
@@ -99,6 +126,8 @@ class CarruselImagenesController extends Controller
                 $carruselImagen->imagen = $imagenName;
                 $storage->put($imagenName, file_get_contents($request->imagen));
             }
+
+            // Guardar cambios en la base de datos y retornar mensaje
             $carruselImagen->save();
             return response()->json([
                 'message' => 'Imagen actualizada correctamente'
@@ -111,7 +140,13 @@ class CarruselImagenesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina la instancia especificada por el ID de la base de datos y su imagen
+     * vinculada del almacenamiento del servidor
+     * 
+     * @param mixed $id
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 404: el ID recibido no corresponde con ninguna instancia de carrusel actual 
      */
     public function destroy(string $id)
     {

@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Middleware 'HandleCors' es usado por todas las rutas de la API
         $middleware->api(append: [
             HandleCors::class
         ]);

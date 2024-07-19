@@ -14,7 +14,15 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
-    // adds a new user into the user's database
+    /**
+     * Crea un nuevo usuario
+     * 
+     * @param Request $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
+     */
     public function create(Request $request){
         try{
             if(isset($request->name, $request->password)){
@@ -38,7 +46,17 @@ class UserController extends Controller
         }
     }
 
-    // authenticates a user
+    /**
+     * Autentica un usuario verificando la existencia de los datos de inicio de sesión
+     * recibidos en la base de datos
+     * 
+     * @param Request $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 401: Inicio de sesión erróneo
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
+     */
     public function authenticate(Request $request){
         try
         {
@@ -79,6 +97,18 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Verifica la existencia de una sesión activa revisando la existencia de un token de
+     * inicio de sesión válido en la solicitud hecha al endpoint que tiene asignado esta
+     * función
+     * 
+     * @param Request $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 401: Inicio de sesión erróneo
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
+     */
     public function checkSession(Request $request){
         try{
             if(Auth::check()){
@@ -101,6 +131,16 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Cierra la sesión actual e invalida el token de inicio de sesión del la sesión
+     * (valga la redundancia) previamente activa.
+     * 
+     * @param Request $request
+     * @return JsonResponse con los siguientes estados posibles
+     * 200: ok
+     * 500: error interno del servidor si alguna excepción ocurre al 
+     * tratar de realizar la solicitud
+     */
     public function logout(Request $request){
         try{
             Auth::logout();
